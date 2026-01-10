@@ -597,14 +597,23 @@ body {
     margin-bottom: 20px;
 }
 
-/* ----- レスポンシブ ----- */
+/* ----- レスポンシブ（スマホ対応）----- */
 @media (max-width: 480px) {
-    body {
+
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
         padding: 5px;
     }
 
+    #root {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     .calendar-container {
-        padding: 15px;
+        padding: 10px;
     }
 
     .app-title {
@@ -615,15 +624,36 @@ body {
         font-size: 1.1em;
     }
 
+    /* モーダル：上下左右にしっかり余白をつける */
+    .modal-overlay {
+        align-items: flex-start;  /* ← スマホでのズレ防止の決め手 */
+        overflow-y: auto;
+        padding: 20px;
+    }
+
     .modal-content {
-       margin-top: 20px;
-        margin-bottom: 20px;
         width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
         padding: 16px;
+        max-width: 420px;
+        box-sizing: border-box;
+    }
+
+    /* カレンダーのはみ出しを防止（重要） */
+    .calendar-grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 3px;
+        width: 100%;
+        overflow-x: hidden;
     }
 
     .date-cell {
-        padding: 4px;
+        aspect-ratio: 1;
+        width: 100%;
+        min-width: 0;
+        padding: 2px;
+        box-sizing: border-box;
     }
 
     .date-number {
