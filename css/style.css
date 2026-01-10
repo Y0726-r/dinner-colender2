@@ -694,3 +694,31 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #9db59d;
 }
+/* ===== インフォカード ===== */
+.info-section {
+    margin-bottom: 20px;
+}
+
+.info-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 12px;
+    color: #4a5a4a;
+}
+
+.info-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b8e6b;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-card-content {
+    font-size: 14px;
+    line-height: 1.5;
+}
