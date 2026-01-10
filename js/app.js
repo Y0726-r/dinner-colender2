@@ -5,7 +5,8 @@
 const { useState, useEffect } = React;
 
 // LocalStorageキー
-const STORAGE_KEY = 'bunny_calendar_meals';
+const STORAGE_KEY = "dinner-meals-" + window.location.pathname;
+
 
 // ユーティリティ: 日付フォーマット（YYYY-MM-DD）
 function formatDate(date) {
