@@ -256,3 +256,58 @@ function Header() {
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));
+
+// ============================================
+// 詳細モーダル
+// ============================================
+function DetailModal({ date, meal, onEdit, onDelete, onClose }) {
+    if (!meal) return null;
+
+    const handleDelete = () => {
+        if (confirm("この記録を削除する？")) {
+            onDelete();
+        }
+    };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                
+                <div className="modal-header">
+                    <h3 className="modal-title">
+                        {date.toLocaleDateString("ja-JP", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </h3>
+                    <button className="close-button" onClick={onClose}>×</button>
+                </div>
+
+                <div
+                    className="detail-bunny"
+                    dangerouslySetInnerHTML={{ __html: BunnyIcons.sitting }}
+                />
+
+                {meal.photo && (
+                    <div className="detail-photo">
+                        <img src={meal.photo} alt={meal.menu} />
+                    </div>
+                )}
+
+                <div className="detail-menu">{meal.menu}</div>
+
+                {meal.memo && <div className="detail-memo">{meal.memo}</div>}
+
+                <div className="button-group">
+                    <button className="button button-danger" onClick={handleDelete}>
+                        削除
+                    </button>
+                    <button className="button button-primary" onClick={onEdit}>
+                        編集
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
