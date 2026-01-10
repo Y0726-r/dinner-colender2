@@ -245,7 +245,7 @@ function Header() {
         <header className="app-header">
             <h1 className="app-title">
                 <span>🐰</span>
-                <span>うさぎカレンダー</span>
+                <span>夕飯カレンダー🍳</span>
             </h1>
         </header>
     );
