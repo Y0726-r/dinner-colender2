@@ -311,3 +311,138 @@ function DetailModal({ date, meal, onEdit, onDelete, onClose }) {
         </div>
     );
 }
+
+function SearchBar({ query, setQuery, results, onResultClick }) {
+    return (
+        <div className="search-container">
+            <input
+                className="search-input"
+                placeholder="メニューを検索"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+            />
+
+            {query && (
+                <div className="search-results">
+                    {results.length === 0 ? (
+                        <div className="search-no">見つからないよ🐰</div>
+                    ) : (
+                        results.map(([dateStr, meal]) => (
+                            <div
+                                key={dateStr}
+                                className="search-item"
+                                onClick={() => onResultClick(dateStr)}
+                            >
+                                {dateStr}：{meal.menu}
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+function Calendar({ currentDate, meals, onDateClick, onPrevMonth, onNextMonth }) {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    const dates = [];
+    for (let i = 1; i <= lastDate; i++) {
+        dates.push(new Date(year, month, i));
+    }
+
+    return (
+        <div className="calendar-container">
+            <div className="calendar-header">
+                <button onClick={onPrevMonth}>←</button>
+                <div className="month-title">
+                    {year}年 {month + 1}月
+                </div>
+                <button onClick={onNextMonth}>→</button>
+            </div>
+
+            <div className="calendar-grid">
+                {dates.map((d) => {
+                    const key = formatDate(d);
+                    const hasMeal = meals[key];
+
+                    return (
+                        <div
+                            key={key}
+                            className={`calendar-cell ${hasMeal ? "filled" : ""} ${isToday(d) ? "today" : ""}`}
+                            onClick={() => onDateClick(d)}
+                        >
+                            <div className="cell-date">{d.getDate()}</div>
+
+                            {hasMeal && (
+                                <div className="cell-icon"
+                                     dangerouslySetInnerHTML={{ __html: getRandomBunnyIcon() }}
+                                />
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+function EntryModal({ date, initialData, onSave, onClose }) {
+    const [menu, setMenu] = useState(initialData?.menu || "");
+    const [memo, setMemo] = useState(initialData?.memo || "");
+    const [photo, setPhoto] = useState(initialData?.photo || "");
+
+    const save = () => {
+        if (!menu.trim()) return;
+        onSave({ menu, memo, photo });
+    };
+
+    const handlePhoto = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => setPhoto(reader.result);
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <h3 className="modal-title">
+                    {date.toLocaleDateString("ja-JP")}
+                </h3>
+
+                <input
+                    className="input"
+                    placeholder="メニュー名"
+                    value={menu}
+                    onChange={(e) => setMenu(e.target.value)}
+                />
+
+                <textarea
+                    className="textarea"
+                    placeholder="メモ（任意）"
+                    value={memo}
+                    onChange={(e) => setMemo(e.target.value)}
+                />
+
+                <input type="file" accept="image/*" onChange={handlePhoto} />
+
+                {photo && (
+                    <div className="preview">
+                        <img src={photo} />
+                    </div>
+                )}
+
+                <div className="button-group">
+                    <button className="button" onClick={onClose}>キャンセル</button>
+                    <button className="button button-primary" onClick={save}>
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
