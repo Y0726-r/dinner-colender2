@@ -239,7 +239,12 @@ function App() {
 
     return (
         <div>
-            <Header />
+             <Header onReset={() => {
+                if (confirm("名前をリセットしますか？")) {
+                    localStorage.removeItem(USER_NAME_KEY);
+                    setUserName("");
+                }
+            }} />
 
             {/* 情報カード */}
             <div className="info-section">
@@ -318,16 +323,31 @@ function App() {
 // ============================================
 // ヘッダー
 // ============================================
-function Header() {
+// ============================================
+// ヘッダー
+// ============================================
+function Header({ onReset }) {  // ★onReset を追加
     return (
         <header className="app-header">
-            <h1 className="app-title">
-                <span>🐰</span>
-                <span>夕飯カレンダー🍳</span>
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <h1 className="app-title">
+                    <span>🐰</span>
+                    <span>夕飯カレンダー🍳</span>
+                </h1>
+                {onReset && (
+                    <button 
+                        className="reset-name-button"
+                        onClick={onReset}
+                        title="名前を変更"
+                    >
+                        ⚙️
+                    </button>
+                )}
+            </div>
         </header>
     );
 }
+
 
 // ============================================
 // 検索バー
@@ -709,3 +729,4 @@ function DetailModal({ date, meal, onEdit, onDelete, onClose }) {
 // レンダリング
 // ============================================
 ReactDOM.render(<App />, document.getElementById("root"));
+
