@@ -5,7 +5,8 @@
 const { useState, useEffect } = React;
 
 // 🔑 LocalStorageキー（ユーザー別） 
-const STORAGE_KEY = "dinner-meals-" + (localStorage.getItem("userName") || "default");
+// LocalStorageキー（名前が決まるまで "default" を使う）
+const STORAGE_KEY = (userName) => "dinner-meals-" + (userName || "default");
 
 // 日付フォーマット
 function formatDate(date) {
@@ -50,24 +51,24 @@ function App() {
     // ----------------------------
     // 初回データ読み込み（userName確定後）
     // ----------------------------
-    useEffect(() => {
-        if (!userName) return; // 名前未入力なら読み込まない
-
-        const stored = localStorage.getItem("dinner-meals-" + userName);
-        if (stored) {
-            try {
-                setMeals(JSON.parse(stored));
-            } catch (e) {
-                console.error("データの読み込み失敗", e);
-            }
+   useEffect(() => {
+    const key = STORAGE_KEY(userName);
+    const stored = localStorage.getItem(key);
+    if (stored) {
+        try {
+            setMeals(JSON.parse(stored));
+        } catch (e) {
+            console.error("データ読み込み失敗", e);
         }
-    }, [userName]);
+    }
+}, [userName]);
 
     // 保存
-    useEffect(() => {
-        if (!userName) return;
-        localStorage.setItem("dinner-meals-" + userName, JSON.stringify(meals));
-    }, [meals, userName]);
+   useEffect(() => {
+    const key = STORAGE_KEY(userName);
+    localStorage.setItem(key, JSON.stringify(meals));
+}, [meals, userName]);
+
 
     // ----------------------------
     // 📝 ユーザー名が未設定 → 専用画面表示
