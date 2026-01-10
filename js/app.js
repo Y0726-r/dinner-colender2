@@ -94,14 +94,14 @@ function App() {
     const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
     const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
 
-    // 検索
-    const searchResults = searchQuery.trim()
-        ? Object.entries(meals)
-            .filter(([date, meal]) =>
-                meal.menu.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .sort((a, b) => b[0].localeCompare(a[0]))
-        : [];
+   // 検索（エラー防止版）
+const searchResults = searchQuery.trim()
+    ? Object.entries(meals)
+        .filter(([date, meal]) =>
+            meal?.menu?.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .sort((a, b) => b[0].localeCompare(a[0]))
+    : [];
 
     return (
         <div>
