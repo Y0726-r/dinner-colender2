@@ -1,0 +1,662 @@
+/* ============================================
+   🐰 うさぎカレンダー - 夕飯記録アプリ
+   スタイルシート
+============================================ */
+
+/* ----- リセット・基本設定 ----- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+    background: linear-gradient(135deg, #f5f5f0 0%, #e8ede8 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #4a5a4a;
+}
+
+#root {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+/* ----- ヘッダー ----- */
+.app-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.app-title {
+    font-size: 1.5em;
+    color: #6b8e6b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ----- 検索バー ----- */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #d4e3d4;
+    border-radius: 25px;
+    font-size: 15px;
+    background: #fff;
+    color: #4a5a4a;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #b5c9b6;
+    box-shadow: 0 0 0 3px rgba(181, 201, 182, 0.2);
+}
+
+.search-input::placeholder {
+    color: #a0b5a0;
+}
+
+/* ----- 検索結果リスト ----- */
+.search-results {
+    margin-top: 15px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.search-results-title {
+    padding: 12px 16px;
+    background: #f5e6d3;
+    color: #6b8e6b;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1px solid #e8d8c5;
+}
+
+.search-result-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background: #fafafa;
+}
+
+.search-result-date {
+    font-size: 13px;
+    color: #8a9a8a;
+    margin-bottom: 4px;
+}
+
+.search-result-menu {
+    font-size: 15px;
+    color: #4a5a4a;
+    font-weight: 500;
+}
+
+/* ----- カレンダーコンテナ ----- */
+.calendar-container {
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* ----- カレンダーヘッダー ----- */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e8ede8;
+}
+
+.month-title {
+    font-size: 1.3em;
+    color: #6b8e6b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-button {
+    background: #b5c9b6;
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-button:hover {
+    background: #9db59d;
+    transform: scale(1.05);
+}
+
+.nav-button:active {
+    transform: scale(0.95);
+}
+
+/* ----- 曜日ヘッダー ----- */
+.weekday-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.weekday-name {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8a9a8a;
+    padding: 8px 0;
+}
+
+.weekday-name.sunday {
+    color: #d4938e;
+}
+
+.weekday-name.saturday {
+    color: #8e9ed4;
+}
+
+/* ----- カレンダーグリッド ----- */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+/* ----- 日付セル ----- */
+.date-cell {
+    aspect-ratio: 1;
+    border: 1px solid #e8ede8;
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    position: relative;
+    background: #fff;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.date-cell:hover {
+    background: #f8faf8;
+    border-color: #b5c9b6;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.date-cell.other-month {
+    background: #fafafa;
+    color: #bbb;
+    cursor: default;
+}
+
+.date-cell.other-month:hover {
+    background: #fafafa;
+    border-color: #e8ede8;
+    transform: none;
+    box-shadow: none;
+}
+
+.date-cell.today {
+    background: linear-gradient(135deg, #fff8f0 0%, #f5e6d3 100%);
+    border: 2px solid #b5c9b6;
+    box-shadow: 0 0 0 3px rgba(181, 201, 182, 0.15);
+}
+
+.date-cell.has-record {
+    background: #fef9f3;
+    border-color: #f5e6d3;
+}
+
+.date-cell.has-record.today {
+    background: linear-gradient(135deg, #fff8f0 0%, #f5e6d3 100%);
+}
+
+/* ----- 日付番号 ----- */
+.date-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5a4a;
+    margin-bottom: 2px;
+}
+
+.date-cell.other-month .date-number {
+    color: #ccc;
+}
+
+.date-cell.today .date-number {
+    color: #6b8e6b;
+}
+
+/* ----- うさぎアイコンコンテナ ----- */
+.bunny-container {
+    width: 20px;
+    height: 20px;
+    margin: 2px 0;
+}
+
+.bunny-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* 今日のうさぎ */
+.date-cell.today .bunny-container {
+    opacity: 1;
+}
+
+/* 空欄の薄いうさぎ */
+.date-cell:not(.has-record):not(.today) .bunny-container {
+    opacity: 0.08;
+}
+
+.date-cell.has-record:not(.today) .bunny-container {
+    display: none;
+}
+
+/* ----- メニューテキスト ----- */
+.menu-text {
+    font-size: 11px;
+    color: #6b8e6b;
+    text-align: center;
+    line-height: 1.3;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    max-height: 28px;
+}
+
+/* ----- モーダル共通 ----- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px;
+    max-width: 400px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ----- モーダルヘッダー ----- */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e8ede8;
+}
+
+.modal-title {
+    font-size: 1.2em;
+    color: #6b8e6b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #8a9a8a;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background: #f0f0f0;
+    color: #4a5a4a;
+}
+
+/* ----- フォーム ----- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b8e6b;
+    margin-bottom: 8px;
+}
+
+.form-label .required {
+    color: #d4938e;
+    margin-left: 4px;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e8ede8;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #4a5a4a;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: #b5c9b6;
+    box-shadow: 0 0 0 3px rgba(181, 201, 182, 0.15);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* ----- 写真アップロード ----- */
+.photo-upload-container {
+    margin-bottom: 20px;
+}
+
+.photo-upload-button {
+    width: 100%;
+    padding: 40px 20px;
+    border: 2px dashed #d4e3d4;
+    border-radius: 8px;
+    background: #fafafa;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.photo-upload-button:hover {
+    border-color: #b5c9b6;
+    background: #f5faf5;
+}
+
+.photo-upload-button .icon {
+    font-size: 32px;
+    color: #b5c9b6;
+    margin-bottom: 8px;
+}
+
+.photo-upload-button .text {
+    font-size: 14px;
+    color: #8a9a8a;
+}
+
+.photo-preview {
+    margin-top: 15px;
+    position: relative;
+}
+
+.photo-preview img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.photo-remove-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: #d4938e;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.photo-remove-button:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+/* ----- ボタン ----- */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.button {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.button-primary {
+    background: #b5c9b6;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(181, 201, 182, 0.3);
+}
+
+.button-primary:hover {
+    background: #9db59d;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(181, 201, 182, 0.4);
+}
+
+.button-primary:active {
+    transform: translateY(0);
+}
+
+.button-secondary {
+    background: #f0f0f0;
+    color: #6b8e6b;
+}
+
+.button-secondary:hover {
+    background: #e5e5e5;
+}
+
+.button-danger {
+    background: #d4938e;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(212, 147, 142, 0.3);
+}
+
+.button-danger:hover {
+    background: #c67f7a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 147, 142, 0.4);
+}
+
+/* ----- 詳細表示 ----- */
+.detail-bunny {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.detail-bunny svg {
+    width: 50px;
+    height: 50px;
+}
+
+.detail-photo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.detail-photo img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-menu {
+    font-size: 1.3em;
+    color: #4a5a4a;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e8ede8;
+}
+
+.detail-memo {
+    font-size: 15px;
+    color: #6b7a6b;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+}
+
+/* ----- レスポンシブ ----- */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .calendar-container {
+        padding: 15px;
+    }
+
+    .app-title {
+        font-size: 1.3em;
+    }
+
+    .month-title {
+        font-size: 1.1em;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .date-cell {
+        padding: 4px;
+    }
+
+    .date-number {
+        font-size: 12px;
+    }
+
+    .menu-text {
+        font-size: 10px;
+    }
+
+    .bunny-container {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* ----- 追加: 月見出しのうさぎ ----- */
+.month-bunny svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* ----- スクロールバーのスタイル ----- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #b5c9b6;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9db59d;
+}
