@@ -37,8 +37,12 @@ function getRandomBunnyIcon() {
 // ============================================
 // メインアプリ
 // ============================================
+// ============================================
+// メインアプリ
+// ============================================
 function App() {
-    const [userName, setUserName] = useState(null);
+    // ★修正: 初期値を undefined にする
+    const [userName, setUserName] = useState(undefined);  // ← ここを null から undefined に変更
     const [tempName, setTempName] = useState("");  
     const [meals, setMeals] = useState({});
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -60,7 +64,7 @@ function App() {
 
     // ★2. userName が確定したらデータを読み込む
     useEffect(() => {
-        if (!userName || userName === "") return;
+        if (userName === undefined || userName === "") return;  // ← ここも修正
         
         const key = STORAGE_KEY(userName);
         const stored = localStorage.getItem(key);
@@ -75,16 +79,23 @@ function App() {
 
     // ★3. meals が変更されたら LocalStorage に保存
     useEffect(() => {
-        if (!userName || userName === "") return;
+        if (userName === undefined || userName === "") return;  // ← ここも修正
         
         const key = STORAGE_KEY(userName);
         localStorage.setItem(key, JSON.stringify(meals));
     }, [meals, userName]);
 
     // ============================
-    // ① 名前がまだなら名前入力画面だけ出す
+    // ① 読み込み中は何も表示しない（追加）
     // ============================
-    if (!userName) {
+    if (userName === undefined) {
+        return null; // または <div>読み込み中...</div>
+    }
+
+    // ============================
+    // ② 名前がまだなら名前入力画面だけ出す
+    // ============================
+    if (userName === "") {  // ← ここも修正
         return (
             <div className="name-setup">
                 <h2>あなたの名前を入力してね🐰</h2>
@@ -111,6 +122,10 @@ function App() {
             </div>
         );
     }
+
+    // （以下は元のコードと同じ）
+    // ...
+
 
     // ============================
     // ② ここから通常画面
