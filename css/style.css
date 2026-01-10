@@ -782,3 +782,38 @@ body.modal-open {
     height: 100vh;
     overflow: hidden;
 }
+/* --- カレンダーのセルの高さを固定する --- */
+.date-cell {
+    height: 70px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* メニュー名の文字が長い時の対策 */
+.menu-text {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 写真があってもレイアウトが崩れないように */
+.bunny-container img,
+.bunny-container svg {
+    max-height: 20px;
+}
+
+/* ---- スマホ ---- */
+@media (max-width: 480px) {
+    .date-cell {
+        height: 50px;
+    }
+    .menu-text {
+        font-size: 8px;
+    }
+    .date-number {
+        font-size: 12px;
+    }
+}
