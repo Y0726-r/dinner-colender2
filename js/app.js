@@ -467,11 +467,49 @@ function EntryModal({ date, initialData, onSave, onClose }) {
     const [memo, setMemo] = useState(initialData?.memo || "");
     const [photo, setPhoto] = useState(initialData?.photo || null);
 
+    // ←これを軽量化版にした！
     const handlePhotoChange = (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
         const reader = new FileReader();
-        reader.onload = (ev) => setPhoto(ev.target.result);
+
+        reader.onload = (event) => {
+            const img = new Image();
+
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+
+                const maxSize = 600;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxSize) {
+                        height *= maxSize / width;
+                        width = maxSize;
+                    }
+                } else {
+                    if (height > maxSize) {
+                        width *= maxSize / height;
+                        height = maxSize;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const compressed = canvas.toDataURL("image/jpeg", 0.9);
+
+                setPhoto(compressed);
+            };
+
+            img.src = event.target.result;
+        };
+
         reader.readAsDataURL(file);
     };
 
@@ -487,6 +525,7 @@ function EntryModal({ date, initialData, onSave, onClose }) {
             photo: photo || null,
         });
     };
+
 
     return (
         <div className="modal-overlay" onClick={onClose}>
