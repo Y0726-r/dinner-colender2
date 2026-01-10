@@ -40,10 +40,13 @@ function getRandomBunnyIcon() {
 // ============================================
 // メインアプリ
 // ============================================
+// ============================================
+// メインアプリ
+// ============================================
 function App() {
-    // ★修正: 初期値を undefined にする
-    const [userName, setUserName] = useState(undefined);  // ← ここを null から undefined に変更
-    const [tempName, setTempName] = useState("");  
+    const [userName, setUserName] = useState(undefined);
+    const [tempName, setTempName] = useState("");
+    const [isLoading, setIsLoading] = useState(true);  // ★追加: ローディング状態
     const [meals, setMeals] = useState({});
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
@@ -58,13 +61,14 @@ function App() {
         if (storedName) {
             setUserName(storedName);
         } else {
-            setUserName(""); // 名前未入力モード
+            setUserName("");
         }
+        setIsLoading(false);  // ★読み込み完了
     }, []);
 
     // ★2. userName が確定したらデータを読み込む
     useEffect(() => {
-        if (userName === undefined || userName === "") return;  // ← ここも修正
+        if (!userName || userName === "") return;
         
         const key = STORAGE_KEY(userName);
         const stored = localStorage.getItem(key);
@@ -79,23 +83,23 @@ function App() {
 
     // ★3. meals が変更されたら LocalStorage に保存
     useEffect(() => {
-        if (userName === undefined || userName === "") return;  // ← ここも修正
+        if (!userName || userName === "") return;
         
         const key = STORAGE_KEY(userName);
         localStorage.setItem(key, JSON.stringify(meals));
     }, [meals, userName]);
 
     // ============================
-    // ① 読み込み中は何も表示しない（追加）
+    // ① 読み込み中は何も表示しない
     // ============================
-    if (userName === undefined) {
-        return null; // または <div>読み込み中...</div>
+    if (isLoading) {
+        return null;  // または <div className="loading">読み込み中...</div>
     }
 
     // ============================
     // ② 名前がまだなら名前入力画面だけ出す
     // ============================
-    if (userName === "") {  // ← ここも修正
+    if (userName === "") {
         return (
             <div className="name-setup">
                 <h2>あなたの名前を入力してね🐰</h2>
@@ -104,6 +108,17 @@ function App() {
                     placeholder="例: Mitsuki"
                     value={tempName}
                     onChange={(e) => setTempName(e.target.value)}
+                    onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                            const name = tempName.trim();
+                            if (!name) {
+                                alert("名前を入力してね🐰");
+                                return;
+                            }
+                            localStorage.setItem(USER_NAME_KEY, name);
+                            setUserName(name);
+                        }
+                    }}
                 />
                 <button
                     className="button button-primary"
@@ -125,6 +140,7 @@ function App() {
 
     // （以下は元のコードと同じ）
     // ...
+
 
 
     // ============================
