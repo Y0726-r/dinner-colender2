@@ -47,7 +47,8 @@ function App() {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [editingMeal, setEditingMeal] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-
+　　 const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
+    
     // LocalStorage 読み込み
     useEffect(() => {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -559,6 +560,35 @@ function DetailModal({ date, meal, onEdit, onDelete, onClose }) {
     };
 
     if (!meal) return null;
+        // 🔽 return の直前に追加！
+    if (!userName) {
+        return (
+            <div className="name-setup">
+                <h2>あなたの名前を入力してね🐰</h2>
+
+                <input
+                    type="text"
+                    className="name-input"
+                    placeholder="例: Mitsuki"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                />
+
+                <button
+                    className="button button-primary"
+                    onClick={() => {
+                        if (userName.trim()) {
+                            localStorage.setItem("userName", userName.trim());
+                            window.location.reload();
+                        }
+                    }}
+                >
+                    決定
+                </button>
+            </div>
+        );
+    }
+
 
     return (
         <div className="modal-overlay" onClick={onClose}>
