@@ -4,7 +4,7 @@ function SearchBar({ query, setQuery, results, onResultClick }) {
             <input
                 type="text"
                 className="search-input"
-                placeholder="メニュー名で検索（例：カレー）"
+                placeholder="メニュー名で検索"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />
@@ -12,7 +12,7 @@ function SearchBar({ query, setQuery, results, onResultClick }) {
             {query && (
                 <div className="search-results">
                     {results.length === 0 && (
-                        <div className="search-no-result">該当なし🐰💭</div>
+                        <div className="search-no-result">該当なし🐰</div>
                     )}
 
                     {results.map(([date, meal]) => (
@@ -31,4 +31,5 @@ function SearchBar({ query, setQuery, results, onResultClick }) {
     );
 }
 
-export default SearchBar;
+// これが絶対必要！UMDでは "window.SearchBar" として公開する！
+window.SearchBar = SearchBar;
