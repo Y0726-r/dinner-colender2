@@ -30,6 +30,35 @@ function isToday(date) {
 // ============================================
 function App() {
     const [currentDate, setCurrentDate] = useState(new Date());
+
+// 今日の日付
+const today = new Date();
+const lastWeek = new Date();
+lastWeek.setDate(today.getDate() - 7);
+
+// 先週の今日のメニュー
+const lastWeekKey = `${lastWeek.getFullYear()}-${lastWeek.getMonth()+1}-${lastWeek.getDate()}`;
+const lastWeekMenu = records[lastWeekKey]?.menu || null;
+
+// 今月のメニューランキング
+const currentMonth = today.getMonth();
+const monthlyCount = {};
+
+Object.keys(records).forEach((key) => {
+    const d = new Date(key);
+    if (d.getMonth() === currentMonth) {
+        const menu = records[key]?.menu;
+        if (menu) {
+            monthlyCount[menu] = (monthlyCount[menu] || 0) + 1;
+        }
+    }
+});
+
+// ランキング化
+const ranking = Object.entries(monthlyCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3); // TOP3
+
     const [meals, setMeals] = useState({});
     const [selectedDate, setSelectedDate] = useState(null);
     const [showEntryModal, setShowEntryModal] = useState(false);
