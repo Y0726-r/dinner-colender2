@@ -4,9 +4,8 @@
 
 const { useState, useEffect } = React;
 
-// 🔑 LocalStorageキー（ユーザー別） 
-// LocalStorageキー（名前が決まるまで "default" を使う）
-const STORAGE_KEY = (userName) => "dinner-meals-" + (userName || "default");
+// LocalStorageキー（ユーザー別）
+const STORAGE_KEY = (name) => "dinner-meals-" + (name || "default");
 
 // 日付フォーマット
 function formatDate(date) {
@@ -16,14 +15,10 @@ function formatDate(date) {
     return `${y}-${m}-${d}`;
 }
 
-function isSameDay(d1, d2) {
-    return formatDate(d1) === formatDate(d2);
-}
-function isToday(date) {
-    return isSameDay(date, new Date());
+function isToday(d) {
+    return formatDate(d) === formatDate(new Date());
 }
 
-// うさぎアイコン
 function getRandomBunnyIcon() {
     if (!window.BunnyIcons) return "";
     const icons = [
@@ -31,7 +26,6 @@ function getRandomBunnyIcon() {
         BunnyIcons.standing,
         BunnyIcons.sitting
     ].filter(Boolean);
-    if (icons.length === 0) return "";
     return icons[Math.floor(Math.random() * icons.length)];
 }
 
@@ -40,8 +34,9 @@ function getRandomBunnyIcon() {
 // ============================================
 function App() {
     const [userName, setUserName] = useState(localStorage.getItem("userName") || "");
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [tempName, setTempName] = useState("");   // ← 入力中の名前
     const [meals, setMeals] = useState({});
+    const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [showEntryModal, setShowEntryModal] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
@@ -49,46 +44,51 @@ function App() {
     const [searchQuery, setSearchQuery] = useState("");
 
     // ----------------------------
-    // 初回データ読み込み（userName確定後）
+    // 名前が決定した瞬間に meals を読み込む
     // ----------------------------
-   useEffect(() => {
-    const key = STORAGE_KEY(userName);
-    const stored = localStorage.getItem(key);
-    if (stored) {
-        try {
-            setMeals(JSON.parse(stored));
-        } catch (e) {
-            console.error("データ読み込み失敗", e);
+    useEffect(() => {
+        if (!userName) return; // 名前未入力なら何もしない
+
+        const key = STORAGE_KEY(userName);
+        const stored = localStorage.getItem(key);
+
+        if (stored) {
+            try {
+                setMeals(JSON.parse(stored));
+            } catch (e) {
+                console.error("データ読み込み失敗", e);
+            }
         }
-    }
-}, [userName]);
+    }, [userName]);
 
     // 保存
-   useEffect(() => {
-    const key = STORAGE_KEY(userName);
-    localStorage.setItem(key, JSON.stringify(meals));
-}, [meals, userName]);
-
+    useEffect(() => {
+        if (!userName) return;
+        const key = STORAGE_KEY(userName);
+        localStorage.setItem(key, JSON.stringify(meals));
+    }, [meals, userName]);
 
     // ----------------------------
-    // 📝 ユーザー名が未設定 → 専用画面表示
+    // 📝 名前未設定 → 名前入力画面を出す
     // ----------------------------
     if (!userName) {
         return (
             <div className="name-setup">
                 <h2>あなたの名前を入力してね🐰</h2>
+
                 <input
                     className="name-input"
                     placeholder="例: Mitsuki"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    value={tempName}
+                    onChange={(e) => setTempName(e.target.value)}
                 />
+
                 <button
                     className="button button-primary"
                     onClick={() => {
-                        if (!userName.trim()) return;
-                        localStorage.setItem("userName", userName.trim());
-                        window.location.reload();
+                        if (!tempName.trim()) return;
+                        localStorage.setItem("userName", tempName.trim());
+                        setUserName(tempName.trim());   // ← reload なし！
                     }}
                 >
                     決定
@@ -98,38 +98,34 @@ function App() {
     }
 
     // ----------------------------
-    // 分析ロジック
+    // ここから先はアプリ本体
     // ----------------------------
+
     const today = new Date();
 
-    // 先週の今日
+    // 先週
     const lastWeek = new Date();
     lastWeek.setDate(today.getDate() - 7);
     const lastWeekMenu = meals[formatDate(lastWeek)]?.menu || null;
 
-    // 今月ランキング（年も比較）
+    // ランキング
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
     const monthlyCount = {};
 
     Object.entries(meals).forEach(([dateStr, meal]) => {
         const d = new Date(dateStr);
+        if (!meal?.menu?.trim()) return;
+        if (d.getFullYear() !== currentYear || d.getMonth() !== currentMonth) return;
 
-        if (!meal || !meal.menu || meal.menu.trim() === "") return;
-
-        if (d.getFullYear() === currentYear && d.getMonth() === currentMonth) {
-            monthlyCount[meal.menu] =
-                (monthlyCount[meal.menu] || 0) + 1;
-        }
+        monthlyCount[meal.menu] = (monthlyCount[meal.menu] || 0) + 1;
     });
 
     const ranking = Object.entries(monthlyCount)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 3);
 
-    // ----------------------------
     // 日付クリック
-    // ----------------------------
     const handleDateClick = (date) => {
         if (date.getMonth() !== currentDate.getMonth()) return;
         setSelectedDate(date);
@@ -141,6 +137,7 @@ function App() {
         }
     };
 
+    // 保存処理
     const saveMeal = (mealData) => {
         const key = formatDate(selectedDate);
         setMeals((prev) => ({ ...prev, [key]: mealData }));
@@ -159,8 +156,7 @@ function App() {
     };
 
     const startEdit = () => {
-        const key = formatDate(selectedDate);
-        setEditingMeal(meals[key]);
+        setEditingMeal(meals[formatDate(selectedDate)]);
         setShowDetailModal(false);
         setShowEntryModal(true);
     };
@@ -179,7 +175,7 @@ function App() {
         : [];
 
     // =============================================
-    // return（UI）
+    // return（UI全部）
     // =============================================
     return (
         <div>
@@ -198,9 +194,9 @@ function App() {
                 <div className="info-card">
                     <div className="info-card-title">🏆 今月の人気メニュー</div>
                     <div className="info-card-content">
-                        {ranking.length === 0 && "今月はまだ記録がないよ🐰"}
-                        {ranking.length > 0 &&
-                            ranking.map(([menu, count], i) => (
+                        {ranking.length === 0
+                            ? "今月はまだ記録がないよ🐰"
+                            : ranking.map(([menu, count], i) => (
                                 <div key={menu}>{i + 1}位：{menu}（{count}回）</div>
                             ))}
                     </div>
@@ -251,11 +247,6 @@ function App() {
     );
 }
 
-// ============================================
-// 以下：Header, SearchBar, Calendar,
-//       EntryModal, DetailModal は元のまま
-// ============================================
-
 function Header() {
     return (
         <header className="app-header">
@@ -264,8 +255,4 @@ function Header() {
     );
 }
 
-// SearchBar / Calendar / Modal の部分は
-// 長いので省略（元のコードのままでOK！）
-
-// 最後のレンダリング
 ReactDOM.render(<App />, document.getElementById("root"));
