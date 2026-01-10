@@ -75,20 +75,28 @@ function App() {
     const lastWeekKey = formatDate(lastWeek);
     const lastWeekMenu = meals[lastWeekKey]?.menu || null;
 
-    // 今月のメニューランキング
-    const currentMonth = today.getMonth();
-    const monthlyCount = {};
+   // 今月のメニューランキング（年も比較）
+const currentYear = today.getFullYear();
+const currentMonth = today.getMonth();
+const monthlyCount = {};
 
-    Object.entries(meals).forEach(([dateStr, meal]) => {
-        const d = new Date(dateStr);
-        if (d.getMonth() === currentMonth && meal?.menu) {
-            monthlyCount[meal.menu] = (monthlyCount[meal.menu] || 0) + 1;
-        }
-    });
+Object.entries(meals).forEach(([dateStr, meal]) => {
+    const d = new Date(dateStr);
 
-    const ranking = Object.entries(monthlyCount)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3);
+    if (
+        d.getFullYear() === currentYear &&
+        d.getMonth() === currentMonth &&
+        meal?.menu
+    ) {
+        monthlyCount[meal.menu] =
+            (monthlyCount[meal.menu] || 0) + 1;
+    }
+});
+
+const ranking = Object.entries(monthlyCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
 
     // -------------------------------
     // 日付クリック
