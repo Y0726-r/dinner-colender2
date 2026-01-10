@@ -317,12 +317,12 @@ body {
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* ← ここがポイント！ */
     justify-content: center;
-    z-index: 1000;
+    overflow-y: auto; /* ← スマホ対応 */
     padding: 20px;
-    animation: fadeIn 0.2s ease;
 }
+
 
 @keyframes fadeIn {
     from {
@@ -337,10 +337,11 @@ body {
     background: #fff;
     border-radius: 15px;
     padding: 20px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 85vh;
-    overflow-y: auto;
+    width: 100%;
+    max-width: 420px;
+    margin-top: 40px;  /* ← これで上下余白が確実につく */
+    margin-bottom: 40px;
+    box-sizing: border-box;
 }
 
 @keyframes slideUp {
@@ -615,7 +616,10 @@ body {
     }
 
     .modal-content {
-        padding: 20px;
+       margin-top: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+        padding: 16px;
     }
 
     .date-cell {
