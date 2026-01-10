@@ -76,10 +76,9 @@ function App() {
     // データ保存
     // ============================
     useEffect(() => {
-        if (!userName) return;
-        const key = STORAGE_KEY(userName);
-        localStorage.setItem(key, JSON.stringify(meals));
-    }, [meals, userName]);
+    console.log("selectedDate:", selectedDate);
+    console.log("editingMeal:", editingMeal);
+}, [selectedDate, editingMeal]);
 
     // ============================
     // ① 名前がまだなら名前入力画面だけ出す
