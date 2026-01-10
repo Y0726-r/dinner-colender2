@@ -8,7 +8,6 @@ const { useState, useEffect } = React;
 const USER_NAME_KEY = "bunny-calendar-user-name";
 const STORAGE_KEY = (name) => "bunny-calendar-meals-" + (name || "default");
 
-
 // 日付フォーマット（YYYY-MM-DD）
 function formatDate(date) {
     const y = date.getFullYear();
@@ -39,7 +38,7 @@ function getRandomBunnyIcon() {
 // メインアプリ
 // ============================================
 function App() {
-    const [userName, setUserName] = useState(null);  // ←修正
+    const [userName, setUserName] = useState(null);
     const [tempName, setTempName] = useState("");  
     const [meals, setMeals] = useState({});
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -49,7 +48,7 @@ function App() {
     const [editingMeal, setEditingMeal] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // ★初回だけ userName を安全に読み込む
+    // ★1. 初回だけ userName を読み込む
     useEffect(() => {
         const storedName = localStorage.getItem(USER_NAME_KEY);
         if (storedName) {
@@ -59,13 +58,28 @@ function App() {
         }
     }, []);
 
-    // ============================
-    // データ保存
-    // ============================
+    // ★2. userName が確定したらデータを読み込む
     useEffect(() => {
-    console.log("selectedDate:", selectedDate);
-    console.log("editingMeal:", editingMeal);
-}, [selectedDate, editingMeal]);
+        if (!userName || userName === "") return;
+        
+        const key = STORAGE_KEY(userName);
+        const stored = localStorage.getItem(key);
+        if (stored) {
+            try {
+                setMeals(JSON.parse(stored));
+            } catch (e) {
+                console.error("データの読み込みに失敗しました", e);
+            }
+        }
+    }, [userName]);
+
+    // ★3. meals が変更されたら LocalStorage に保存
+    useEffect(() => {
+        if (!userName || userName === "") return;
+        
+        const key = STORAGE_KEY(userName);
+        localStorage.setItem(key, JSON.stringify(meals));
+    }, [meals, userName]);
 
     // ============================
     // ① 名前がまだなら名前入力画面だけ出す
@@ -84,7 +98,10 @@ function App() {
                     className="button button-primary"
                     onClick={() => {
                         const name = tempName.trim();
-                        if (!name) return;
+                        if (!name) {
+                            alert("名前を入力してね🐰");
+                            return;
+                        }
                         localStorage.setItem(USER_NAME_KEY, name);
                         setUserName(name);
                     }}
@@ -454,7 +471,6 @@ function EntryModal({ date, initialData, onSave, onClose }) {
     const [memo, setMemo] = useState(initialData?.memo || "");
     const [photo, setPhoto] = useState(initialData?.photo || null);
 
-    // ←これを軽量化版にした！
     const handlePhotoChange = (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -512,7 +528,6 @@ function EntryModal({ date, initialData, onSave, onClose }) {
             photo: photo || null,
         });
     };
-
 
     return (
         <div className="modal-overlay" onClick={onClose}>
