@@ -8,6 +8,7 @@ const { useState, useEffect } = React;
 const USER_NAME_KEY = "bunny-calendar-user-name";
 const STORAGE_KEY = (name) => "bunny-calendar-meals-" + (name || "default");
 
+
 // 日付フォーマット（YYYY-MM-DD）
 function formatDate(date) {
     const y = date.getFullYear();
@@ -38,39 +39,25 @@ function getRandomBunnyIcon() {
 // メインアプリ
 // ============================================
 function App() {
-    // --- ユーザー名まわり ---
-    const [userName, setUserName] = useState(
-        localStorage.getItem(USER_NAME_KEY) || ""
-    );
-    const [tempName, setTempName] = useState("");
-
-    // --- カレンダー状態 ---
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const [userName, setUserName] = useState(null);  // ←修正
+    const [tempName, setTempName] = useState("");  
     const [meals, setMeals] = useState({});
+    const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [showEntryModal, setShowEntryModal] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [editingMeal, setEditingMeal] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // ============================
-    // データ読み込み（userName 決定後）
-    // ============================
+    // ★初回だけ userName を安全に読み込む
     useEffect(() => {
-        if (!userName) return;
-
-        const key = STORAGE_KEY(userName);
-        const stored = localStorage.getItem(key);
-        if (stored) {
-            try {
-                setMeals(JSON.parse(stored));
-            } catch (e) {
-                console.error("データ読み込み失敗", e);
-            }
+        const storedName = localStorage.getItem(USER_NAME_KEY);
+        if (storedName) {
+            setUserName(storedName);
         } else {
-            setMeals({});
+            setUserName(""); // 名前未入力モード
         }
-    }, [userName]);
+    }, []);
 
     // ============================
     // データ保存
