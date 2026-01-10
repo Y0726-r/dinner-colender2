@@ -75,7 +75,7 @@ function App() {
     const lastWeekKey = formatDate(lastWeek);
     const lastWeekMenu = meals[lastWeekKey]?.menu || null;
 
-   // 今月のメニューランキング（年も比較）
+  // 今月のメニューランキング（年も比較）
 const currentYear = today.getFullYear();
 const currentMonth = today.getMonth();
 const monthlyCount = {};
@@ -83,10 +83,12 @@ const monthlyCount = {};
 Object.entries(meals).forEach(([dateStr, meal]) => {
     const d = new Date(dateStr);
 
+    // meal が存在しない or menu が未入力ならスキップ（←重要！）
+    if (!meal || !meal.menu || meal.menu.trim() === "") return;
+
     if (
         d.getFullYear() === currentYear &&
-        d.getMonth() === currentMonth &&
-        meal?.menu
+        d.getMonth() === currentMonth
     ) {
         monthlyCount[meal.menu] =
             (monthlyCount[meal.menu] || 0) + 1;
