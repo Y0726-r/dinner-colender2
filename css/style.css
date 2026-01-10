@@ -777,3 +777,8 @@ body {
     font-size: 14px;
     line-height: 1.5;
 }
+/* 画面がズレて消える問題の修正（iOS/Android対応）*/
+body.modal-open {
+    height: 100vh;
+    overflow: hidden;
+}
