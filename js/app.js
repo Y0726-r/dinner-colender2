@@ -729,4 +729,7 @@ function DetailModal({ date, meal, onEdit, onDelete, onClose }) {
 // レンダリング
 // ============================================
 ReactDOM.render(<App />, document.getElementById("root"));
+// app.js 最後
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
 
